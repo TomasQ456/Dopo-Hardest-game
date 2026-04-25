@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+Thumbs.db
+# IDEs
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+# Java build outputs
+build/
+target/
+out/
+bin/
+*.class
+# Logs / crash dumps
+*.log
+hs_err_pid*
+replay_pid*
+# Temp files
+*.tmp
+*.swp
+*~
+# Generated docs only (keep docs/astah tracked)
+doc/generated/
+docs/generated/
+javadoc/

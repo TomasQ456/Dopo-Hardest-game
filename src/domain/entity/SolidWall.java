@@ -1,0 +1,11 @@
+package domain.entity;
+
+import domain.exception.DhgDomainException;
+
+/**
+ * An interactive or dynamic wall that acts as a solid physical barrier.
+ */
+public class SolidWall extends SpecialElement {
+    @Override
+    public void onContact(Player player) throws DhgDomainException {}
+}

@@ -16,6 +16,13 @@ public abstract class Entity implements Updatable {
     protected boolean active;
 
     /**
+     * Constructs an Entity with default active state (true).
+     */
+    public Entity() {
+        this.active = true;
+    }
+
+    /**
      * Updates the entity's state for the current frame.
      * Overridden by concrete entities (e.g., Actors moving, Animations).
      * @param deltaSeconds The time elapsed since the last frame in seconds.
@@ -31,7 +38,13 @@ public abstract class Entity implements Updatable {
      * @throws DhgDomainException if calculation fails.
      */
     public boolean intersects(Entity other) throws DhgDomainException {
-        return false;
+        if (other == null) {
+            throw new DhgDomainException(DhgDomainException.ERR_NULL_OTHER);
+        }
+        if (this.hitBox == null || other.hitBox == null) {
+            return false;
+        }
+        return this.hitBox.getBounds().intersects(other.hitBox.getBounds());
     }
 
     /**
@@ -49,7 +62,10 @@ public abstract class Entity implements Updatable {
      * @throws DhgDomainException if retrieval fails.
      */
     public Vector2 getPosition() throws DhgDomainException {
-        return null;
+        if (this.position == null) {
+            throw new DhgDomainException(DhgDomainException.ERR_NULL_POSITION);
+        }
+        return this.position;
     }
 
     /**
@@ -58,7 +74,12 @@ public abstract class Entity implements Updatable {
      * @param pos The new position vector.
      * @throws DhgDomainException if setting the position fails or is invalid.
      */
-    public void setPosition(Vector2 pos) throws DhgDomainException {}
+    public void setPosition(Vector2 pos) throws DhgDomainException {
+        if (pos == null) {
+            throw new DhgDomainException(DhgDomainException.ERR_NULL_POS);
+        }
+        this.position = pos;
+    }
 
     /**
      * Retrieves the hitbox of the entity.
@@ -67,7 +88,10 @@ public abstract class Entity implements Updatable {
      * @throws DhgDomainException if retrieval fails.
      */
     public HitBox getHitBox() throws DhgDomainException {
-        return null;
+        if (this.hitBox == null) {
+            throw new DhgDomainException(DhgDomainException.ERR_NULL_HITBOX);
+        }
+        return this.hitBox;
     }
 
     /**
@@ -77,7 +101,7 @@ public abstract class Entity implements Updatable {
      * @throws DhgDomainException if retrieval fails.
      */
     public boolean isActive() throws DhgDomainException {
-        return false;
+        return this.active;
     }
 
     /**
@@ -85,5 +109,7 @@ public abstract class Entity implements Updatable {
      * Used when coins are collected or enemies are destroyed.
      * @throws DhgDomainException if deactivation fails.
      */
-    public void deactivate() throws DhgDomainException {}
+    public void deactivate() throws DhgDomainException {
+        this.active = false;
+    }
 }

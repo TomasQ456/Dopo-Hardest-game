@@ -3,6 +3,7 @@ package domain.input;
 import domain.entity.Player;
 import domain.level.Level;
 import domain.math.Direction;
+import domain.exception.DhgDomainException;
 
 /**
  * Interface mapping physical or AI input to Player movement directions.
@@ -16,5 +17,5 @@ public interface PlayerController {
      * @param level The current level context (useful for AI).
      * @return The intended Direction.
      */
-    Direction nextDirection(Player player, Level level);
+    Direction nextDirection(Player player, Level level) throws DhgDomainException;
 }

@@ -8,6 +8,10 @@ import domain.exception.DhgDomainException;
  */
 public abstract class Enemy extends Actor {
 
+    public Enemy(double speed) {
+        super(speed);
+    }
+
     @Override
     public abstract void update(double deltaSeconds) throws DhgDomainException;
 
@@ -18,5 +22,9 @@ public abstract class Enemy extends Actor {
      * @throws DhgDomainException if collision logic fails.
      */
     @Override
-    public abstract void onContact(Player player) throws DhgDomainException;
+    public void onContact(Player player) throws DhgDomainException {
+        if (!player.absorbHit()) {
+            player.registerDeath();
+        }
+    }
 }

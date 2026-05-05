@@ -11,12 +11,34 @@ public class LinearEnemy extends Enemy {
 
     private Vector2 direction;
 
-    @Override
-    public void update(double deltaSeconds) throws DhgDomainException {}
+    /**
+     * Constructs a LinearEnemy with specified speed and direction.
+     * @param speed The movement speed.
+     * @param direction The initial direction to move.
+     */
+    public LinearEnemy(double speed, Vector2 direction) {
+        super(speed);
+        this.direction = direction;
+    }
 
     @Override
-    public void onContact(Player player) throws DhgDomainException {}
+    public void update(double deltaSeconds) throws DhgDomainException {
+        if (this.position == null || this.direction == null) {
+            return;
+        }
+        Vector2 movement = this.direction.scale(this.speed * deltaSeconds);
+        Vector2 newPosition = this.position.add(movement);
+        this.position = newPosition;
+    }
 
     @Override
-    protected void applyBounds(TileMap tileMap) throws DhgDomainException {}
+    protected void applyBounds(TileMap tileMap) throws DhgDomainException {
+        // Reverse direction if hitting a boundary (simplified)
+        if (this.position.x < 0 || this.position.x > 320) {
+            this.direction = new Vector2(-this.direction.x, this.direction.y);
+        }
+        if (this.position.y < 0 || this.position.y > 240) {
+            this.direction = new Vector2(this.direction.x, -this.direction.y);
+        }
+    }
 }

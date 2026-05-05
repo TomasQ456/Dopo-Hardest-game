@@ -7,5 +7,7 @@ import domain.exception.DhgDomainException;
  */
 public class Bomb extends SpecialElement {
     @Override
-    public void onContact(Player player) throws DhgDomainException {}
+    public void onContact(Player player) throws DhgDomainException {
+        player.registerDeath();
+    }
 }

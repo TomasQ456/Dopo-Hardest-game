@@ -10,7 +10,16 @@ public class LevelMemento implements Serializable {
     private Set<String> collectedCoinIds;
     private double remainingSeconds;
 
-    public List<PlayerMemento> getPlayerMementos() { return null; }
-    public Set<String> getCollectedCoinIds() { return null; }
-    public double getRemainingSeconds() { return 0.0; }
+    /**
+     * Constructs a LevelMemento with all level state fields.
+     */
+    public LevelMemento(List<PlayerMemento> playerMementos, Set<String> collectedCoinIds, double remainingSeconds) {
+        this.playerMementos = playerMementos;
+        this.collectedCoinIds = collectedCoinIds;
+        this.remainingSeconds = remainingSeconds;
+    }
+
+    public List<PlayerMemento> getPlayerMementos() { return this.playerMementos; }
+    public Set<String> getCollectedCoinIds() { return this.collectedCoinIds; }
+    public double getRemainingSeconds() { return this.remainingSeconds; }
 }

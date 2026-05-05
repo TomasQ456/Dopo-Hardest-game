@@ -7,5 +7,8 @@ import domain.exception.DhgDomainException;
  */
 public class LifeSource extends SpecialElement {
     @Override
-    public void onContact(Player player) throws DhgDomainException {}
+    public void onContact(Player player) throws DhgDomainException {
+        player.addShieldHit();
+        this.deactivate();
+    }
 }

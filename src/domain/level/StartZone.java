@@ -8,5 +8,7 @@ import domain.exception.DhgDomainException;
  */
 public class StartZone extends Zone {
     @Override
-    public void onContact(Player player) throws DhgDomainException {}
+    public void onContact(Player player) throws DhgDomainException {
+        // StartZone does not harm the player
+    }
 }

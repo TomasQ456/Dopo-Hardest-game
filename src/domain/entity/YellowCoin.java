@@ -7,5 +7,11 @@ import domain.exception.DhgDomainException;
  */
 public class YellowCoin extends Coin {
     @Override
-    public void onContact(Player player) throws DhgDomainException {}
+    public void onContact(Player player) throws DhgDomainException {
+        if (this.collected) {
+            return;
+        }
+        this.collected = true;
+        this.deactivate();
+    }
 }

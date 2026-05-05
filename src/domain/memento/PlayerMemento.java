@@ -11,4 +11,21 @@ public class PlayerMemento implements Serializable {
     private Vector2 position;
     private SkinBehavior skin;
     private int shieldHits;
+
+    /**
+     * Constructs a PlayerMemento with all player state fields.
+     */
+    public PlayerMemento(int deaths, int score, Vector2 position, SkinBehavior skin, int shieldHits) {
+        this.deaths = deaths;
+        this.score = score;
+        this.position = position;
+        this.skin = skin;
+        this.shieldHits = shieldHits;
+    }
+
+    public int getDeaths() { return this.deaths; }
+    public int getScore() { return this.score; }
+    public Vector2 getPosition() { return this.position; }
+    public SkinBehavior getSkin() { return this.skin; }
+    public int getShieldHits() { return this.shieldHits; }
 }

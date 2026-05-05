@@ -7,6 +7,22 @@ import domain.exception.DhgDomainException;
  */
 public class BonusCoin extends Coin {
     private int points;
+
+    /**
+     * Constructs a BonusCoin with specified points.
+     * @param points The number of points this coin grants.
+     */
+    public BonusCoin(int points) {
+        this.points = points;
+    }
+
     @Override
-    public void onContact(Player player) throws DhgDomainException {}
+    public void onContact(Player player) throws DhgDomainException {
+        if (this.collected) {
+            return;
+        }
+        this.collected = true;
+        player.addScore(this.points);
+        this.deactivate();
+    }
 }

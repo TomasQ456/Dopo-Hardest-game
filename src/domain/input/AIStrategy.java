@@ -3,6 +3,7 @@ package domain.input;
 import domain.entity.Player;
 import domain.level.Level;
 import domain.math.Direction;
+import domain.exception.DhgDomainException;
 
 /** Strategy interface defining different computer-controlled intelligence levels. */
 public interface AIStrategy {
@@ -13,5 +14,5 @@ public interface AIStrategy {
      * @param level The current level state.
      * @return The calculated Direction.
      */
-    Direction nextDirection(Player player, Level level);
+    Direction nextDirection(Player player, Level level) throws DhgDomainException;
 }

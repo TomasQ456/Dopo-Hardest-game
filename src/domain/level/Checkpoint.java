@@ -11,6 +11,27 @@ public class Checkpoint extends Zone {
 
     private Vector2 respawnPosition;
 
+    /**
+     * Constructs a Checkpoint with the specified respawn position.
+     * @param respawnPosition The position where players respawn at this checkpoint.
+     */
+    public Checkpoint(Vector2 respawnPosition) {
+        this.respawnPosition = respawnPosition;
+    }
+
+    /**
+     * Retrieves the respawn position for this checkpoint.
+     * @return The respawn position vector.
+     */
+    public Vector2 getRespawnPosition() throws DhgDomainException {
+        if (this.respawnPosition == null) {
+            throw new DhgDomainException(DhgDomainException.ERR_NULL_POSITION);
+        }
+        return this.respawnPosition;
+    }
+
     @Override
-    public void onContact(Player player) throws DhgDomainException {}
+    public void onContact(Player player) throws DhgDomainException {
+        // Checkpoint activation is handled by Level
+    }
 }

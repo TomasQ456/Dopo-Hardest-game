@@ -7,5 +7,8 @@ import domain.exception.DhgDomainException;
  */
 public class SolidWall extends SpecialElement {
     @Override
-    public void onContact(Player player) throws DhgDomainException {}
+    public void onContact(Player player) throws DhgDomainException {
+        // SolidWall does not modify player state on contact.
+        // Collision resolution (position adjustment) is handled by the Level's collision system.
+    }
 }

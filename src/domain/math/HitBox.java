@@ -17,6 +17,16 @@ public class HitBox {
      * @throws DhgDomainException if the bounds cannot be retrieved.
      */
     public Rect getBounds() throws DhgDomainException {
-        return null;
+        if (this.bounds == null) {
+            throw new DhgDomainException(DhgDomainException.ERR_BOUNDS_NOT_INITIALIZED);
+        }
+        return this.bounds;
+    }
+
+    public HitBox(Rect bounds) throws DhgDomainException {
+        if (bounds == null) {
+            throw new DhgDomainException(DhgDomainException.ERR_NULL_BOUNDS_PARAM);
+        }
+        this.bounds = bounds;
     }
 }

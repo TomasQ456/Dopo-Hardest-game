@@ -154,14 +154,16 @@ public class GameController {
         gameLoopTimer = new javax.swing.Timer(GAME_LOOP_MS, e -> {
             try {
                 // 1. Feed player 1 direction to domain
+                Direction d1 = keyboardHandler.getPlayer1Direction();
                 Level level = gameModel.getCurrentLevel();
                 if (level != null) {
-                    Direction d1 = keyboardHandler.getPlayer1Direction();
-                    for (Player p : level.getPlayers()) {
-                        try {
-                            p.setDesiredDirection(d1);
-                        } catch (DhgDomainException ex) {
-                            ex.printStackTrace();
+                    List<Entity> entities = level.getEntities();
+                    for (Entity entity : entities) {
+                        if (entity instanceof Player) {
+                            Player p = (Player) entity;
+                            if (p.getController() instanceof HumanController) {
+                                p.setDesiredDirection(d1);
+                            }
                         }
                     }
                 }
@@ -177,18 +179,6 @@ public class GameController {
                 if (updated != null) {
                     double remaining = updated.getTimeController().getRemainingSeconds();
                     gameWindow.getGamePanel().setRemainingSeconds(remaining);
-
-                    // Track coin statistics
-                    long collected = updated.getEntities().stream()
-                        .filter(e -> e instanceof domain.entity.Coin)
-                        .filter(e -> {
-                            try { return ((domain.entity.Coin)e).isCollected(); }
-                            catch (Exception ex) { return false; }
-                        }).count();
-                    long total = updated.getEntities().stream()
-                        .filter(e -> e instanceof domain.entity.YellowCoin
-                                  || e instanceof domain.entity.SkinCoin)
-                        .count();
                 }
 
                 gameWindow.getGamePanel().repaint();

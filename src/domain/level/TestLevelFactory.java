@@ -56,8 +56,11 @@ public class TestLevelFactory {
         // Step 2 — Build Player 1
         Vector2 spawnPos = new Vector2(2 * Level.TILE_SIZE, 3 * Level.TILE_SIZE);
         HitBox hitBox = new HitBox(new Rect(0, 0, 30, 30));
-        Player player = new Player(spawnPos, hitBox, new HumanController());
+        Player player = new Player(5.0); // example speed
+        player.setPosition(spawnPos);
+        player.setHitBox(hitBox);
         player.applySkin(new BlinkySkin());
+        player.setController(new HumanController());
 
         // Step 3 — Build Enemies (2 LinearEnemies)
         Enemy e1 = new LinearEnemy(3.0, new Vector2(1, 0));

@@ -34,19 +34,7 @@ public class DhgDomainException extends Exception {
     public static final String ERR_NULL_BOUNDS_PARAM      = "bounds must not be null";
 
     // --- Level ---
-    public static final String ERR_NULL_TILEMAP  = "TileMap not initialized";
-    public static final String ERR_NULL_ENTITY   = "entity must not be null";
-
-    // --- LevelManager ---
-    public static final String ERR_NO_NEXT_LEVEL    = "no next level available";
-    public static final String ERR_NO_LEVELS_LOADED = "no levels loaded";
-
-    // --- SinglePlayerMode ---
-    public static final String ERR_NO_SPAWN_FOUND = "no spawn position found in level";
-
-    // --- Player ---
-    public static final String ERR_NULL_SKIN  = "skin behavior must not be null";
-    public static final String ERR_NULL_SPAWN = "spawn position must not be null";
+    public static final String ERR_NULL_TILEMAP = "TileMap not initialized";
 
     // --- Rect / Vector2 ---
     public static final String ERR_NULL_OTHER_RECT   = "other Rect must not be null";

@@ -46,11 +46,11 @@ public class LevelManager {
     /**
      * Retrieves the currently active level.
      * @return The active Level instance.
-     * @throws DhgDomainException if no levels are loaded.
      */
     public Level getCurrentLevel() throws DhgDomainException {
-        if (this.levels == null || this.levels.isEmpty())
-            throw new DhgDomainException(DhgDomainException.ERR_NO_LEVELS_LOADED);
+        if (this.levels.isEmpty() || this.currentIndex >= this.levels.size()) {
+            return null;
+        }
         return this.levels.get(this.currentIndex);
     }
 
@@ -70,7 +70,6 @@ public class LevelManager {
     /**
      * Checks if there are more levels remaining after the current one.
      * @return true if there is a next level.
-     * @throws DhgDomainException if check fails.
      */
     public boolean hasNextLevel() throws DhgDomainException {
         return (this.currentIndex + 1) < this.levels.size();
@@ -78,11 +77,13 @@ public class LevelManager {
 
     /**
      * Advances to the next level.
-     * @throws DhgDomainException if no next level exists.
+     * @return The next level, or null if none exists.
      */
-    public void nextLevel() throws DhgDomainException {
-        if (!hasNextLevel())
-            throw new DhgDomainException(DhgDomainException.ERR_NO_NEXT_LEVEL);
-        this.currentIndex++;
+    public Level nextLevel() throws DhgDomainException {
+        if (hasNextLevel()) {
+            this.currentIndex++;
+            return this.levels.get(this.currentIndex);
+        }
+        return null;
     }
 }

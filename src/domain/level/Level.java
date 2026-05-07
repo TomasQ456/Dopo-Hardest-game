@@ -39,19 +39,17 @@ public class Level {
     public void update(double deltaSeconds) throws DhgDomainException {
         this.timeController.tick(deltaSeconds);
 
-        // Update all active players and apply bounds
+        // Update all active players
         for (Player player : this.players) {
-            player.update(deltaSeconds);
-            player.applyBounds(this.tileMap);
+            if (player.isActive()) {
+                player.update(deltaSeconds);
+            }
         }
 
         // Update all active entities
-        for (Entity entity : new ArrayList<>(this.entities)) {
+        for (Entity entity : this.entities) {
             if (entity.isActive()) {
                 entity.update(deltaSeconds);
-                if (entity instanceof domain.entity.Actor) {
-                    ((domain.entity.Actor) entity).applyBounds(this.tileMap);
-                }
             }
         }
 
@@ -65,33 +63,29 @@ public class Level {
      */
     private void checkCollisions() throws DhgDomainException {
         for (Player player : this.players) {
-            try {
-                if (!player.isActive()) continue;
-                for (Entity entity : new ArrayList<>(this.entities)) {
-                    if (!entity.isActive()) continue;
-                    if (player.intersects(entity)) {
-                        entity.onContact(player);
-                    }
+            if (!player.isActive()) {
+                continue;
+            }
+            for (Entity entity : this.entities) {
+                if (!entity.isActive()) {
+                    continue;
                 }
-            } catch (DhgDomainException e) {
-                e.printStackTrace();
+                if (player.intersects(entity)) {
+                    entity.onContact(player);
+                }
             }
         }
     }
 
     /**
      * Registers a new entity into the active simulation.
-     * Routes Player entities to the players list, others to entities list.
      * @param entity The entity to add.
      */
     public void addEntity(Entity entity) throws DhgDomainException {
-        if (entity == null)
-            throw new DhgDomainException(DhgDomainException.ERR_NULL_ENTITY);
-        if (entity instanceof Player) {
-            this.players.add((Player) entity);
-        } else {
-            this.entities.add(entity);
+        if (entity == null) {
+            throw new DhgDomainException(DhgDomainException.ERR_NULL_OTHER);
         }
+        this.entities.add(entity);
     }
 
     /**
@@ -152,28 +146,6 @@ public class Level {
 
     public List<Entity> getEntities() {
         return this.entities;
-    }
-
-    /**
-     * Finds and returns the StartZone in the entities list.
-     * @return The StartZone, or null if not found.
-     */
-    private StartZone findStartZone() {
-        return entities.stream()
-            .filter(e -> e instanceof StartZone)
-            .map(e -> (StartZone) e)
-            .findFirst().orElse(null);
-    }
-
-    /**
-     * Finds and returns the GoalZone in the entities list.
-     * @return The GoalZone, or null if not found.
-     */
-    private GoalZone findGoalZone() {
-        return entities.stream()
-            .filter(e -> e instanceof GoalZone)
-            .map(e -> (GoalZone) e)
-            .findFirst().orElse(null);
     }
 }
 

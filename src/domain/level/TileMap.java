@@ -55,3 +55,4 @@ public class TileMap {
         return !tile.isSolid();
     }
 }
+

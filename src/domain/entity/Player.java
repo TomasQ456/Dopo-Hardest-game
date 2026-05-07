@@ -2,6 +2,7 @@ package domain.entity;
 
 import domain.math.Vector2;
 import domain.math.Direction;
+import domain.math.HitBox;
 import domain.skin.SkinBehavior;
 import domain.input.PlayerController;
 import domain.exception.DhgDomainException;
@@ -17,7 +18,9 @@ public class Player extends Actor {
     private int score;
     private Vector2 spawnPosition;
     private SkinBehavior skinBehavior;
+    private SkinBehavior originalSkin;
     private int shieldHits;
+    private double speedPenalty;
     private PlayerController controller;
 
     /**
@@ -26,6 +29,27 @@ public class Player extends Actor {
      */
     public Player(double speed) {
         super(speed);
+        this.deaths = 0;
+        this.score = 0;
+        this.shieldHits = 0;
+        this.speedPenalty = 1.0;
+    }
+
+    /**
+     * Constructs a Player with position, hitbox, and controller.
+     * @param position The player's position.
+     * @param hitBox The player's hitbox.
+     * @param controller The input controller for this player.
+     * @throws DhgDomainException if parameters are invalid.
+     */
+    public Player(Vector2 position, domain.math.HitBox hitBox,
+                  PlayerController controller)
+        throws DhgDomainException {
+        super(0);
+        this.position = position;
+        this.hitBox = hitBox;
+        this.controller = controller;
+        this.speedPenalty = 1.0;
         this.deaths = 0;
         this.score = 0;
         this.shieldHits = 0;
@@ -47,6 +71,14 @@ public class Player extends Actor {
      * @throws DhgDomainException if setting the direction fails.
      */
     public void setDesiredDirection(Direction dir) throws DhgDomainException {}
+
+    public void setController(PlayerController c) {
+        this.controller = c;
+    }
+
+    public PlayerController getController() {
+        return this.controller;
+    }
 
     /**
      * Sets the aesthetic border color for the player.
@@ -78,10 +110,15 @@ public class Player extends Actor {
     /**
      * Increments the player's death count.
      * Called by the GameMode or Level when a fatal collision occurs.
+     * Resets skin to original and speed penalty.
      * @throws DhgDomainException if updating the death count fails.
      */
     public void registerDeath() throws DhgDomainException {
         this.deaths++;
+        this.speedPenalty = 1.0;
+        if (this.originalSkin != null) {
+            this.skinBehavior = this.originalSkin;
+        }
     }
 
     /**
@@ -96,11 +133,15 @@ public class Player extends Actor {
 
     /**
      * Applies a new SkinBehavior strategy to the player.
-     * Modifies player speed, size, and shield characteristics based on the skin.
+     * The original skin is stored on first application and restored after death.
      * @param behavior The new SkinBehavior to apply.
      * @throws DhgDomainException if applying the skin fails.
      */
     public void applySkin(SkinBehavior behavior) throws DhgDomainException {
+        if (behavior == null)
+            throw new DhgDomainException(DhgDomainException.ERR_NULL_SKIN);
+        // First skin applied is the original
+        if (this.originalSkin == null) this.originalSkin = behavior;
         this.skinBehavior = behavior;
     }
 
@@ -139,4 +180,21 @@ public class Player extends Actor {
      * @throws DhgDomainException if retrieval fails.
      */
     public int getScore() throws DhgDomainException { return this.score; }
+
+    /**
+     * Retrieves the current skin behavior applied to this player.
+     * Used by the view layer for rendering.
+     * @return The current SkinBehavior.
+     */
+    public SkinBehavior getSkinBehavior() {
+        return this.skinBehavior;
+    }
+
+    /**
+     * Package-private method to reduce speed after being hit.
+     * Used internally by skins like ClydeSkin.
+     */
+    void reduceSpeedAfterHit() {
+        this.speedPenalty = 0.7;
+    }
 }

@@ -81,6 +81,10 @@ public abstract class Entity implements Updatable {
         this.position = pos;
     }
 
+    public void setHitBox(HitBox hitBox) {
+        this.hitBox = hitBox;
+    }
+
     /**
      * Retrieves the hitbox of the entity.
      * Used by the Level's collision system.

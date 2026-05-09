@@ -1,5 +1,8 @@
 package controller;
 
+import domain.memento.CheckpointCaretaker;
+import domain.memento.FileGameStateRepository;
+import domain.memento.GameStateRepository;
 import view.GameWindow;
 import view.MainMenuPanel;
 import view.LevelSelectPanel;
@@ -15,6 +18,7 @@ import domain.level.TestLevelFactory;
 import domain.math.Direction;
 import domain.mode.SinglePlayerMode;
 
+import javax.swing.*;
 import java.util.List;
 
 public class GameController {
@@ -27,8 +31,12 @@ public class GameController {
     private GameModel gameModel;
     private int selectedLevelIndex = 0;
 
+    private final CheckpointCaretaker caretaker = new CheckpointCaretaker();
+    private final GameStateRepository repository = new FileGameStateRepository();
+
     private static final int GAME_LOOP_MS    = 16;
     private static final double DELTA_SECONDS = 0.016;
+
 
     public GameController(GameWindow gameWindow) {
         this.gameWindow = gameWindow;
@@ -65,13 +73,49 @@ public class GameController {
             }
 
             @Override
-            public void onSave() {
-                // stub
+            public void onSave() throws DhgDomainException {
+                Level level = gameModel.getCurrentLevel();
+                if (level == null) return;
+
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Save files", "sav"));
+                chooser.setDialogTitle("Save game");
+
+                if (chooser.showSaveDialog(gameWindow) == JFileChooser.APPROVE_OPTION) {
+                    String path = chooser.getSelectedFile().getAbsolutePath();
+                    if (!path.endsWith(".sav")) path += ".sav";
+                    try {
+                        caretaker.save(level);
+                        repository.saveGame(caretaker, path);
+                    } catch (DhgDomainException e) {
+                        javax.swing.JOptionPane.showMessageDialog(gameWindow,
+                                "Save failed: " + e.getMessage(), "Error",
+                                javax.swing.JOptionPane.ERROR_MESSAGE);
+                    }
+                }
             }
 
             @Override
             public void onLoad() {
-                // stub
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Save files", "sav"));
+                chooser.setDialogTitle("Load game");
+
+                if (chooser.showOpenDialog(gameWindow) == JFileChooser.APPROVE_OPTION) {
+                    String path = chooser.getSelectedFile().getAbsolutePath();
+                    try {
+                        CheckpointCaretaker loaded = repository.loadGame(path);
+                        Level level = gameModel.getCurrentLevel();
+                        if (level == null) return;
+                        loaded.restore(level);
+                        gameWindow.getGamePanel().setLevel(level);
+                        gameWindow.getGamePanel().repaint();
+                    } catch (DhgDomainException e) {
+                        javax.swing.JOptionPane.showMessageDialog(gameWindow,
+                                "Load failed: " + e.getMessage(), "Error",
+                                javax.swing.JOptionPane.ERROR_MESSAGE);
+                    }
+                }
             }
         });
     }

@@ -6,10 +6,12 @@ import domain.skin.SkinBehavior;
 
 /** Data transfer object representing a snapshot of a Player's state. */
 public class PlayerMemento implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int deaths;
     private int score;
     private Vector2 position;
-    private SkinBehavior skin;
+    private String skinName;             // saved as plain String
+    private transient SkinBehavior skin; // skipped by serializer
     private int shieldHits;
 
     /**
@@ -22,7 +24,7 @@ public class PlayerMemento implements Serializable {
         this.skin = skin;
         this.shieldHits = shieldHits;
     }
-
+    public String getSkinName() { return skinName; }
     public int getDeaths() { return this.deaths; }
     public int getScore() { return this.score; }
     public Vector2 getPosition() { return this.position; }

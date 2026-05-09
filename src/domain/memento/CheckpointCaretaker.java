@@ -11,7 +11,7 @@ import java.util.*;
  * Manages the current saved snapshot (Memento) of the game.
  */
 public class CheckpointCaretaker implements Serializable {
-    
+    private static final long serialVersionUID = 1L;
     private LevelMemento currentMemento;
 
     /**
@@ -44,6 +44,7 @@ public class CheckpointCaretaker implements Serializable {
      * @param level The level to restore into.
      */
     public void restore(Level level) throws DhgDomainException {
+
         if (this.currentMemento == null) {
             return;
         }
@@ -56,7 +57,7 @@ public class CheckpointCaretaker implements Serializable {
             PlayerMemento pm = playerMementos.get(i);
 
             player.setPosition(pm.getPosition());
-            // Other state restoration would go here
+            player.applySkin(SkinRegistry.fromName(pm.getSkinName()));
         }
 
         level.getTimeController().setLimit(this.currentMemento.getRemainingSeconds());

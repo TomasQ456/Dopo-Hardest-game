@@ -1,5 +1,7 @@
 package view;
 
+import domain.exception.DhgDomainException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,7 +21,7 @@ public class MainMenuPanel extends JPanel {
         void onPlay();
         void onImport();
         void onExport();
-        void onSave();
+        void onSave() throws DhgDomainException;
         void onLoad();
     }
 

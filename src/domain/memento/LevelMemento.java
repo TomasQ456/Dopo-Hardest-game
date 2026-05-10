@@ -9,6 +9,7 @@ public class LevelMemento implements Serializable {
     private List<PlayerMemento> playerMementos;
     private Set<String> collectedCoinIds;
     private double remainingSeconds;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructs a LevelMemento with all level state fields.

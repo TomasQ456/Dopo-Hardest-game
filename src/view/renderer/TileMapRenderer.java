@@ -29,8 +29,8 @@ public class TileMapRenderer {
     }
 
     public void render(Graphics2D g2d, TileMap tileMap, int panelWidth, int panelHeight) throws DhgDomainException {
-        int cols = panelWidth / tileSize;
-        int rows = panelHeight / tileSize;
+        int cols = Math.min(panelWidth / tileSize, tileMap.getWidth());
+        int rows = Math.min(panelHeight / tileSize, tileMap.getHeight());
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {

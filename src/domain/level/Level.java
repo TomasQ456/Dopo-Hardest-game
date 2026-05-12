@@ -6,6 +6,7 @@ import java.util.List;
 import domain.exception.DhgDomainException;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The core container representing a single playable stage.
@@ -14,11 +15,13 @@ import java.util.ArrayList;
 public class Level {
     
     public static final int TILE_SIZE = 40;
+    private static final AtomicInteger LEVEL_COUNTER = new AtomicInteger(1);
 
     private String id;
     private TileMap tileMap;
     private List<Player> players;
     private List<Entity> entities;
+    private List<Checkpoint> checkpoints;
     private TimeController timeController;
     private Checkpoint activeCheckpoint;
 
@@ -28,7 +31,17 @@ public class Level {
     public Level() {
         this.players = new ArrayList<>();
         this.entities = new ArrayList<>();
+        this.checkpoints = new ArrayList<>();
         this.timeController = new TimeController();
+        this.id = "level_" + String.format("%02d", LEVEL_COUNTER.getAndIncrement());
+    }
+
+    public String getId() throws DhgDomainException {
+        return this.id;
+    }
+
+    public void setId(String id) throws DhgDomainException {
+        this.id = id;
     }
 
     /**
@@ -86,6 +99,9 @@ public class Level {
             throw new DhgDomainException(DhgDomainException.ERR_NULL_OTHER);
         }
         this.entities.add(entity);
+        if (entity instanceof Checkpoint) {
+            this.checkpoints.add((Checkpoint) entity);
+        }
     }
 
     /**
@@ -147,5 +163,11 @@ public class Level {
     public List<Entity> getEntities() {
         return this.entities;
     }
+
+    public List<Checkpoint> getCheckpoints() throws DhgDomainException {
+        return this.checkpoints;
+    }
+
+
 }
 

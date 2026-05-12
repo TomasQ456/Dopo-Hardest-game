@@ -1,5 +1,9 @@
 package controller;
 
+import domain.memento.CheckpointCaretaker;
+import domain.memento.FileGameStateRepository;
+import domain.memento.GameStateRepository;
+import domain.memento.TxtGameStateRepository;
 import view.GameWindow;
 import view.MainMenuPanel;
 import view.LevelSelectPanel;
@@ -15,6 +19,7 @@ import domain.level.TestLevelFactory;
 import domain.math.Direction;
 import domain.mode.SinglePlayerMode;
 
+import javax.swing.*;
 import java.util.List;
 
 public class GameController {
@@ -27,8 +32,13 @@ public class GameController {
     private GameModel gameModel;
     private int selectedLevelIndex = 0;
 
+    private final CheckpointCaretaker caretaker = new CheckpointCaretaker();
+    private final GameStateRepository repository = new FileGameStateRepository();
+    private final TxtGameStateRepository txtRepository = new TxtGameStateRepository();
+
     private static final int GAME_LOOP_MS    = 16;
     private static final double DELTA_SECONDS = 0.016;
+
 
     public GameController(GameWindow gameWindow) {
         this.gameWindow = gameWindow;
@@ -56,22 +66,109 @@ public class GameController {
 
             @Override
             public void onImport() {
-                // stub
+                try {
+                    Level level = gameModel.getCurrentLevel();
+                    if (level == null) return;
+
+                    JFileChooser chooser = new JFileChooser();
+                    chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Text save files", "txt"));
+                    chooser.setDialogTitle("Import game");
+
+                    if (chooser.showOpenDialog(gameWindow) == JFileChooser.APPROVE_OPTION) {
+                        String path = chooser.getSelectedFile().getAbsolutePath();
+                        try {
+                            CheckpointCaretaker loaded = txtRepository.loadGame(path);
+                            loaded.restore(level);
+                            gameWindow.getGamePanel().setLevel(level);
+                            gameWindow.getGamePanel().setRemainingSeconds(level.getTimeController().getRemainingSeconds());
+                            gameWindow.getGamePanel().repaint();
+                        } catch (DhgDomainException e) {
+                            javax.swing.JOptionPane.showMessageDialog(gameWindow,
+                                    "Import failed: " + e.getMessage(), "Error",
+                                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                } catch (DhgDomainException e) {
+                    javax.swing.JOptionPane.showMessageDialog(gameWindow,
+                            "Import failed: " + e.getMessage(), "Error",
+                            javax.swing.JOptionPane.ERROR_MESSAGE);
+                }
             }
 
             @Override
             public void onExport() {
-                // stub
+                try {
+                    Level level = gameModel.getCurrentLevel();
+                    if (level == null) return;
+
+                    JFileChooser chooser = new JFileChooser();
+                    chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Text save files", "txt"));
+                    chooser.setDialogTitle("Export game");
+
+                    if (chooser.showSaveDialog(gameWindow) == JFileChooser.APPROVE_OPTION) {
+                        String path = chooser.getSelectedFile().getAbsolutePath();
+                        if (!path.endsWith(".txt")) path += ".txt";
+                        try {
+                            caretaker.save(level);
+                            txtRepository.saveGame(caretaker, path);
+                        } catch (DhgDomainException e) {
+                            javax.swing.JOptionPane.showMessageDialog(gameWindow,
+                                    "Export failed: " + e.getMessage(), "Error",
+                                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                } catch (DhgDomainException e) {
+                    javax.swing.JOptionPane.showMessageDialog(gameWindow,
+                            "Export failed: " + e.getMessage(), "Error",
+                            javax.swing.JOptionPane.ERROR_MESSAGE);
+                }
             }
 
             @Override
-            public void onSave() {
-                // stub
+            public void onSave() throws DhgDomainException {
+                Level level = gameModel.getCurrentLevel();
+                if (level == null) return;
+
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Save files", "sav"));
+                chooser.setDialogTitle("Save game");
+
+                if (chooser.showSaveDialog(gameWindow) == JFileChooser.APPROVE_OPTION) {
+                    String path = chooser.getSelectedFile().getAbsolutePath();
+                    if (!path.endsWith(".sav")) path += ".sav";
+                    try {
+                        caretaker.save(level);
+                        repository.saveGame(caretaker, path);
+                    } catch (DhgDomainException e) {
+                        javax.swing.JOptionPane.showMessageDialog(gameWindow,
+                                "Save failed: " + e.getMessage(), "Error",
+                                javax.swing.JOptionPane.ERROR_MESSAGE);
+                    }
+                }
             }
 
             @Override
             public void onLoad() {
-                // stub
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Save files", "sav"));
+                chooser.setDialogTitle("Load game");
+
+                if (chooser.showOpenDialog(gameWindow) == JFileChooser.APPROVE_OPTION) {
+                    String path = chooser.getSelectedFile().getAbsolutePath();
+                    try {
+                        CheckpointCaretaker loaded = repository.loadGame(path);
+                        Level level = gameModel.getCurrentLevel();
+                        if (level == null) return;
+                        loaded.restore(level);
+                        gameWindow.getGamePanel().setLevel(level);
+                        gameWindow.getGamePanel().setRemainingSeconds(level.getTimeController().getRemainingSeconds());
+                        gameWindow.getGamePanel().repaint();
+                    } catch (DhgDomainException e) {
+                        javax.swing.JOptionPane.showMessageDialog(gameWindow,
+                                "Load failed: " + e.getMessage(), "Error",
+                                javax.swing.JOptionPane.ERROR_MESSAGE);
+                    }
+                }
             }
         });
     }
@@ -88,9 +185,11 @@ public class GameController {
                 try {
                     Level testLevel = TestLevelFactory.build();
                     gameModel.setGameMode(new SinglePlayerMode());
+                    gameModel.setCurrentLevel(testLevel);
                     // Manually set the level on LevelManager stub
                     // until LevelParser is complete:
                     gameWindow.getGamePanel().setLevel(testLevel);
+                    gameWindow.getGamePanel().setRemainingSeconds(testLevel.getTimeController().getRemainingSeconds());
                     gameWindow.showGame();
                     startGameLoop();
                 } catch (DhgDomainException e) {
@@ -173,7 +272,9 @@ public class GameController {
 
                 // 3. Push updated level to panel
                 Level updated = gameModel.getCurrentLevel();
-                gameWindow.getGamePanel().setLevel(updated);
+                if (updated != null) {
+                    gameWindow.getGamePanel().setLevel(updated);
+                }
 
                 // 4. Update HUD data from level
                 if (updated != null) {

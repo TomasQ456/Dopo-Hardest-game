@@ -135,6 +135,14 @@ public class GameModel implements GameModelSubject {
         this.levelManager = levelManager;
     }
 
+    /**
+     * Registers the currently active level directly.
+     * @param level The level to advance and render.
+     */
+    public void setCurrentLevel(Level level) throws DhgDomainException {
+        this.levelManager.setCurrentLevel(level);
+    }
+
     @Override
     public void addObserver(GameModelObserver observer) throws DhgDomainException {
         if (observer == null) {

@@ -21,6 +21,14 @@ public class LinearEnemy extends Enemy {
         this.direction = direction;
     }
 
+    public Vector2 getDirection() throws DhgDomainException {
+        return this.direction;
+    }
+
+    public void setDirection(Vector2 direction) throws DhgDomainException {
+        this.direction = direction;
+    }
+
     @Override
     public void update(double deltaSeconds) throws DhgDomainException {
         if (this.position == null || this.direction == null) {

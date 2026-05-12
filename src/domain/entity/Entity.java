@@ -5,12 +5,17 @@ import domain.math.HitBox;
 import domain.core.Updatable;
 import domain.exception.DhgDomainException;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Base abstract class for all physical objects on the map.
  * Defines position, bounding boxes, active state, and fundamental interactions.
  */
 public abstract class Entity implements Updatable {
 
+    private static final AtomicInteger ENTITY_COUNTER = new AtomicInteger(1);
+
+    private final String id;
     protected Vector2 position;
     protected HitBox hitBox;
     protected boolean active;
@@ -20,6 +25,7 @@ public abstract class Entity implements Updatable {
      */
     public Entity() {
         this.active = true;
+        this.id = getClass().getSimpleName() + "_" + String.format("%02d", ENTITY_COUNTER.getAndIncrement());
     }
 
     /**
@@ -115,5 +121,17 @@ public abstract class Entity implements Updatable {
      */
     public void deactivate() throws DhgDomainException {
         this.active = false;
+    }
+
+    /**
+     * Marks the entity as active again.
+     * @throws DhgDomainException if activation fails.
+     */
+    public void activate() throws DhgDomainException {
+        this.active = true;
+    }
+
+    public String getId() throws DhgDomainException {
+        return this.id;
     }
 }

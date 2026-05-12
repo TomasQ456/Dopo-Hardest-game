@@ -2,12 +2,14 @@ package domain.math;
 
 import domain.exception.DhgDomainException;
 
+import java.io.Serializable;
+import java.util.Vector;
+
 /**
  * Represents a 2D vector for positions and velocities.
  * Used extensively across the domain for spatial calculations.
  */
-public class Vector2 {
-    
+public class Vector2 implements Serializable {
     public double x;
     public double y;
 

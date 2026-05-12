@@ -28,6 +28,10 @@ public abstract class Coin extends Entity {
      */
     public boolean isCollected() throws DhgDomainException { return this.collected; }
 
+    public void setCollected(boolean collected) throws DhgDomainException {
+        this.collected = collected;
+    }
+
     /**
      * Resets the coin to an uncollected state, typically upon level reset.
      * @throws DhgDomainException if reset fails.

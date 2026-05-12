@@ -23,6 +23,22 @@ public class WaypointEnemy extends Enemy {
         this.waypoints = waypoints;
     }
 
+    public List<Vector2> getWaypoints() throws DhgDomainException {
+        return this.waypoints;
+    }
+
+    public void setWaypoints(List<Vector2> waypoints) throws DhgDomainException {
+        this.waypoints = waypoints;
+    }
+
+    public int getCurrentWaypointIndex() throws DhgDomainException {
+        return this.currentWaypointIndex;
+    }
+
+    public void setCurrentWaypointIndex(int currentWaypointIndex) throws DhgDomainException {
+        this.currentWaypointIndex = currentWaypointIndex;
+    }
+
     @Override
     public void update(double deltaSeconds) throws DhgDomainException {
         if (this.position == null || this.waypoints == null || this.waypoints.isEmpty()) {

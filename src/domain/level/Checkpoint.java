@@ -30,6 +30,13 @@ public class Checkpoint extends Zone {
         return this.respawnPosition;
     }
 
+    public void setRespawnPosition(Vector2 respawnPosition) throws DhgDomainException {
+        if (respawnPosition == null) {
+            throw new DhgDomainException(DhgDomainException.ERR_NULL_POSITION);
+        }
+        this.respawnPosition = respawnPosition;
+    }
+
     @Override
     public void onContact(Player player) throws DhgDomainException {
         // Checkpoint activation is handled by Level

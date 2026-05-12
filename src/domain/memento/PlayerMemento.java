@@ -22,6 +22,7 @@ public class PlayerMemento implements Serializable {
         this.score = score;
         this.position = position;
         this.skin = skin;
+        this.skinName = skin == null ? null : skin.getClass().getSimpleName();
         this.shieldHits = shieldHits;
     }
     public String getSkinName() { return skinName; }

@@ -79,7 +79,14 @@ public class MainMenuPanel extends JPanel {
         exportItem.addActionListener(e -> { if (listener != null) listener.onExport(); });
         
         JMenuItem saveItem = new JMenuItem("Save");
-        saveItem.addActionListener(e -> { if (listener != null) listener.onSave(); });
+        saveItem.addActionListener(e -> { if (listener != null) {
+            try {
+                listener.onSave();
+            } catch (DhgDomainException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        });
         
         JMenuItem loadItem = new JMenuItem("Load");
         loadItem.addActionListener(e -> { if (listener != null) listener.onLoad(); });

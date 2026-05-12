@@ -13,6 +13,7 @@ public class LevelManager {
     private List<Level> levels;
     private int currentIndex;
     private LevelParser levelParser;
+    private Level currentLevel;
 
     /**
      * Constructs a LevelManager with a new parser and empty levels list.
@@ -41,6 +42,7 @@ public class LevelManager {
         }
 
         this.currentIndex = 0;
+        this.currentLevel = this.levels.isEmpty() ? null : this.levels.get(0);
     }
 
     /**
@@ -48,10 +50,14 @@ public class LevelManager {
      * @return The active Level instance.
      */
     public Level getCurrentLevel() throws DhgDomainException {
+        if (this.currentLevel != null) {
+            return this.currentLevel;
+        }
         if (this.levels.isEmpty() || this.currentIndex >= this.levels.size()) {
             return null;
         }
-        return this.levels.get(this.currentIndex);
+        this.currentLevel = this.levels.get(this.currentIndex);
+        return this.currentLevel;
     }
 
     /**
@@ -64,7 +70,8 @@ public class LevelManager {
             throw new DhgDomainException("Level index out of bounds: " + index);
         }
         this.currentIndex = index;
-        return this.levels.get(index);
+        this.currentLevel = this.levels.get(index);
+        return this.currentLevel;
     }
 
     /**
@@ -82,8 +89,18 @@ public class LevelManager {
     public Level nextLevel() throws DhgDomainException {
         if (hasNextLevel()) {
             this.currentIndex++;
-            return this.levels.get(this.currentIndex);
+            this.currentLevel = this.levels.get(this.currentIndex);
+            return this.currentLevel;
         }
         return null;
+    }
+
+    /**
+     * Registers a single active level directly, bypassing the preloaded level list.
+     * Useful for test levels and ad-hoc loaded content.
+     * @param level The active level to use.
+     */
+    public void setCurrentLevel(Level level) throws DhgDomainException {
+        this.currentLevel = level;
     }
 }

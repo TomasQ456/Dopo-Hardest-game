@@ -8,9 +8,9 @@ import domain.exception.DhgDomainException;
  */
 public class TileMap {
 
-    private int width;
-    private int height;
-    private Tile[][] tiles;
+    private final int width;
+    private final int height;
+    private final Tile[][] tiles;
     private static final int TILE_SIZE = 40; // Assume 40x40 pixel tiles
 
     /**
@@ -25,6 +25,14 @@ public class TileMap {
         this.tiles = tiles;
     }
 
+    public int getWidth() {
+        return this.tiles == null ? this.width : this.tiles.length;
+    }
+
+    public int getHeight() {
+        return this.tiles == null ? this.height : (this.tiles.length == 0 ? 0 : this.tiles[0].length);
+    }
+
     /**
      * Retrieves the tile at the specified grid coordinates.
      * Used for rendering and collision checking.
@@ -32,11 +40,14 @@ public class TileMap {
      * @param y The grid Y coordinate.
      * @return The Tile at the coordinates, or null/solid if out of bounds.
      */
-    public Tile getTile(int x, int y) throws DhgDomainException {
-        if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
+    public Tile getTile(int x, int y) {
+        if (this.tiles == null || x < 0 || x >= this.tiles.length) {
             return null;
         }
-        return this.tiles[y][x];
+        if (y < 0 || y >= this.tiles[x].length) {
+            return null;
+        }
+        return this.tiles[x][y];
     }
 
     /**

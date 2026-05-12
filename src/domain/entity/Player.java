@@ -19,6 +19,7 @@ public class Player extends Actor {
     private SkinBehavior skinBehavior;
     private int shieldHits;
     private PlayerController controller;
+    private Direction desiredDirection = Direction.NONE;
 
     /**
      * Constructs a Player with specified initial speed.
@@ -32,7 +33,57 @@ public class Player extends Actor {
     }
 
     @Override
-    public void update(double deltaSeconds) throws DhgDomainException {}
+    public void update(double deltaSeconds) throws DhgDomainException {
+        if (this.position == null || this.desiredDirection == null || this.desiredDirection == Direction.NONE) {
+            return;
+        }
+
+        double dx = 0.0;
+        double dy = 0.0;
+        double diagonalScale = 1.0;
+
+        switch (this.desiredDirection) {
+            case UP:
+                dy = -1.0;
+                break;
+            case DOWN:
+                dy = 1.0;
+                break;
+            case LEFT:
+                dx = -1.0;
+                break;
+            case RIGHT:
+                dx = 1.0;
+                break;
+            case UP_LEFT:
+                dx = -1.0;
+                dy = -1.0;
+                diagonalScale = 1.0 / Math.sqrt(2.0);
+                break;
+            case UP_RIGHT:
+                dx = 1.0;
+                dy = -1.0;
+                diagonalScale = 1.0 / Math.sqrt(2.0);
+                break;
+            case DOWN_LEFT:
+                dx = -1.0;
+                dy = 1.0;
+                diagonalScale = 1.0 / Math.sqrt(2.0);
+                break;
+            case DOWN_RIGHT:
+                dx = 1.0;
+                dy = 1.0;
+                diagonalScale = 1.0 / Math.sqrt(2.0);
+                break;
+            default:
+                return;
+        }
+
+        this.position = new Vector2(
+                this.position.x + dx * this.speed * deltaSeconds * diagonalScale,
+                this.position.y + dy * this.speed * deltaSeconds * diagonalScale
+        );
+    }
 
     @Override
     public void onContact(Player player) throws DhgDomainException {}
@@ -46,7 +97,9 @@ public class Player extends Actor {
      * @param dir The desired Direction of movement.
      * @throws DhgDomainException if setting the direction fails.
      */
-    public void setDesiredDirection(Direction dir) throws DhgDomainException {}
+    public void setDesiredDirection(Direction dir) throws DhgDomainException {
+        this.desiredDirection = (dir == null) ? Direction.NONE : dir;
+    }
 
     public void setController(PlayerController c) {
         this.controller = c;
@@ -83,6 +136,10 @@ public class Player extends Actor {
         this.score += points;
     }
 
+    public void setScore(int score) throws DhgDomainException {
+        this.score = score;
+    }
+
     /**
      * Increments the player's death count.
      * Called by the GameMode or Level when a fatal collision occurs.
@@ -90,6 +147,10 @@ public class Player extends Actor {
      */
     public void registerDeath() throws DhgDomainException {
         this.deaths++;
+    }
+
+    public void setDeaths(int deaths) throws DhgDomainException {
+        this.deaths = deaths;
     }
 
     /**
@@ -110,6 +171,10 @@ public class Player extends Actor {
      */
     public void applySkin(SkinBehavior behavior) throws DhgDomainException {
         this.skinBehavior = behavior;
+    }
+
+    public SkinBehavior getSkinBehavior() throws DhgDomainException {
+        return this.skinBehavior;
     }
 
     /**
@@ -134,6 +199,10 @@ public class Player extends Actor {
         return false;
     }
 
+    public void setShieldHits(int shieldHits) throws DhgDomainException {
+        this.shieldHits = shieldHits;
+    }
+
     /**
      * Retrieves the total number of deaths for this player.
      * @return The death count.
@@ -147,4 +216,6 @@ public class Player extends Actor {
      * @throws DhgDomainException if retrieval fails.
      */
     public int getScore() throws DhgDomainException { return this.score; }
+
+    public int getShieldHits() throws DhgDomainException { return this.shieldHits; }
 }

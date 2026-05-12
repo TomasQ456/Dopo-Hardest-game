@@ -20,6 +20,14 @@ public abstract class Actor extends Entity {
         this.speed = speed;
     }
 
+    public double getSpeed() throws DhgDomainException {
+        return this.speed;
+    }
+
+    public void setSpeed(double speed) throws DhgDomainException {
+        this.speed = speed;
+    }
+
     /**
      * Updates the actor's state, primarily handling movement based on speed.
      * @param deltaSeconds The time elapsed since the last frame in seconds.

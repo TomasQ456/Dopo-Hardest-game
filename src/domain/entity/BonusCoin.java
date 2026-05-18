@@ -25,4 +25,9 @@ public class BonusCoin extends Coin {
         player.addScore(this.points);
         this.deactivate();
     }
+
+    @Override
+    public void accept(EntityVisitor visitor) throws DhgDomainException {
+        visitor.visit(this);
+    }
 }

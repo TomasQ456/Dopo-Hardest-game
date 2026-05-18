@@ -14,4 +14,9 @@ public class YellowCoin extends Coin {
         this.collected = true;
         this.deactivate();
     }
+
+    @Override
+    public void accept(EntityVisitor visitor) throws DhgDomainException {
+        visitor.visit(this);
+    }
 }

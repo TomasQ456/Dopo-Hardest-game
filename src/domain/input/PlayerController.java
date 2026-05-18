@@ -18,4 +18,12 @@ public interface PlayerController {
      * @return The intended Direction.
      */
     Direction nextDirection(Player player, Level level) throws DhgDomainException;
+    
+    /**
+     * Processes raw physical keyboard input if applicable to this controller.
+     * @param player The player receiving the input.
+     * @param direction The direction pressed on the keyboard.
+     * @throws DhgDomainException if processing fails.
+     */
+    void processKeyboardInput(Player player, Direction direction) throws DhgDomainException;
 }

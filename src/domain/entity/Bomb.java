@@ -10,4 +10,9 @@ public class Bomb extends SpecialElement {
     public void onContact(Player player) throws DhgDomainException {
         player.registerDeath();
     }
+
+    @Override
+    public void accept(EntityVisitor visitor) throws DhgDomainException {
+        visitor.visit(this);
+    }
 }

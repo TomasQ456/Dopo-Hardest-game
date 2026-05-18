@@ -10,7 +10,10 @@ import domain.level.GoalTile;
 import domain.level.StartTile;
 import domain.level.WallTile;
 
-public class TileMapRenderer {
+import domain.level.TileVisitor;
+import domain.level.FloorTile;
+
+public class TileMapRenderer implements TileVisitor {
 
     private static final Color COLOR_WALL  = new Color(50, 50, 100);
     private static final Color COLOR_FLOOR = new Color(240, 240, 240);
@@ -18,6 +21,7 @@ public class TileMapRenderer {
     private static final Color COLOR_GOAL  = new Color(255, 215, 0);
     private static final Color COLOR_GRID  = new Color(180, 180, 180);
     private final int tileSize;
+    private Color currentFill;
 
     public TileMapRenderer(int tileSize) {
         this.tileSize = tileSize;
@@ -37,15 +41,22 @@ public class TileMapRenderer {
                 int x = col * tileSize;
                 int y = row * tileSize;
                 Tile tile = tileMap.getTile(col, row);
-                Color fill = COLOR_FLOOR;
-                if (tile instanceof WallTile)       fill = COLOR_WALL;
-                else if (tile instanceof StartTile) fill = COLOR_START;
-                else if (tile instanceof GoalTile)  fill = COLOR_GOAL;
-                g2d.setColor(fill);
+                
+                this.currentFill = COLOR_FLOOR; // Default
+                if (tile != null) {
+                    tile.accept(this);
+                }
+                
+                g2d.setColor(this.currentFill);
                 g2d.fillRect(x, y, tileSize, tileSize);
                 g2d.setColor(COLOR_GRID);
                 g2d.drawRect(x, y, tileSize, tileSize);
             }
         }
     }
+
+    @Override public void visit(WallTile tile) { this.currentFill = COLOR_WALL; }
+    @Override public void visit(StartTile tile) { this.currentFill = COLOR_START; }
+    @Override public void visit(GoalTile tile) { this.currentFill = COLOR_GOAL; }
+    @Override public void visit(FloorTile tile) { this.currentFill = COLOR_FLOOR; }
 }

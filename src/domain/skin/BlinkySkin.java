@@ -6,7 +6,6 @@ import domain.exception.DhgDomainException;
 public class BlinkySkin implements SkinBehavior {
     @Override public double getSpeedMultiplier() throws DhgDomainException { return 1.0; }
     @Override public double getSizeMultiplier() throws DhgDomainException { return 1.0; }
-    @Override public void onHit(Player player) throws DhgDomainException {}
     @Override public void onHit(Player player) throws DhgDomainException {
         if (player == null)
             throw new DhgDomainException(DhgDomainException.ERR_NULL_PLAYER);

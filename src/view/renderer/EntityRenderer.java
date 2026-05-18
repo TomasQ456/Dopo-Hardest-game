@@ -17,7 +17,12 @@ import domain.exception.DhgDomainException;
 import domain.level.Level;
 import domain.math.Vector2;
 
-public class EntityRenderer {
+import domain.entity.EntityVisitor;
+import domain.entity.SkinCoin;
+import domain.entity.SolidWall;
+import domain.entity.SpecialElement;
+
+public class EntityRenderer implements EntityVisitor {
 
     private static final Color COLOR_PLAYER1    = new Color(220, 50, 50);
     private static final Color COLOR_PLAYER2    = new Color(50, 50, 220);
@@ -31,6 +36,10 @@ public class EntityRenderer {
     private static final int   COIN_SIZE        = 16;
     private final int tileSize;
 
+    private Graphics2D currentG2d;
+    private int currentX;
+    private int currentY;
+
     public EntityRenderer(int tileSize) {
         this.tileSize = tileSize;
     }
@@ -39,34 +48,68 @@ public class EntityRenderer {
     }
 
     public void renderLevel(Graphics2D g2d, Level level) throws DhgDomainException {
+        this.currentG2d = g2d;
         List<Entity> entities = level.getEntities();
         for (Entity entity : entities) {
             if (!entity.isActive()) continue;
             Vector2 pos = entity.getPosition();
-            int x = (int) pos.x;
-            int y = (int) pos.y;
-
-            if (entity instanceof Player) {
-                Player p = (Player) entity;
-                Color fill = COLOR_PLAYER1;
-                drawSquareEntity(g2d, x, y, ENTITY_SIZE, fill, COLOR_BORDER, "P");
-            }
-            else if (entity instanceof Enemy) {
-                drawCircleEntity(g2d, x, y, ENTITY_SIZE, COLOR_ENEMY, COLOR_BORDER, "E");
-            }
-            else if (entity instanceof BonusCoin) {
-                drawCircleEntity(g2d, x, y, COIN_SIZE, COLOR_BONUS_COIN, COLOR_BORDER, "");
-            }
-            else if (entity instanceof YellowCoin) {
-                drawCircleEntity(g2d, x, y, COIN_SIZE, COLOR_COIN, COLOR_BORDER, "");
-            }
-            else if (entity instanceof Bomb) {
-                drawCircleEntity(g2d, x, y, ENTITY_SIZE, COLOR_BOMB, COLOR_BORDER, "B");
-            }
-            else if (entity instanceof LifeSource) {
-                drawCircleEntity(g2d, x, y, ENTITY_SIZE, COLOR_LIFE, COLOR_BORDER, "L");
-            }
+            this.currentX = (int) pos.x;
+            this.currentY = (int) pos.y;
+            
+            // Polymorphic dispatch! Zero instanceof used.
+            entity.accept(this);
         }
+    }
+
+    @Override
+    public void visit(Player player) {
+        drawSquareEntity(currentG2d, currentX, currentY, ENTITY_SIZE, COLOR_PLAYER1, COLOR_BORDER, "P");
+    }
+
+    @Override
+    public void visit(Enemy enemy) {
+        drawCircleEntity(currentG2d, currentX, currentY, ENTITY_SIZE, COLOR_ENEMY, COLOR_BORDER, "E");
+    }
+
+    @Override
+    public void visit(YellowCoin coin) {
+        drawCircleEntity(currentG2d, currentX, currentY, COIN_SIZE, COLOR_COIN, COLOR_BORDER, "");
+    }
+
+    @Override
+    public void visit(BonusCoin coin) {
+        drawCircleEntity(currentG2d, currentX, currentY, COIN_SIZE, COLOR_BONUS_COIN, COLOR_BORDER, "");
+    }
+
+    @Override
+    public void visit(Bomb bomb) {
+        drawCircleEntity(currentG2d, currentX, currentY, ENTITY_SIZE, COLOR_BOMB, COLOR_BORDER, "B");
+    }
+
+    @Override
+    public void visit(LifeSource source) {
+        drawCircleEntity(currentG2d, currentX, currentY, ENTITY_SIZE, COLOR_LIFE, COLOR_BORDER, "L");
+    }
+
+    @Override
+    public void visit(SkinCoin coin) {
+        // Special drawing if needed, otherwise fallback or empty
+        drawCircleEntity(currentG2d, currentX, currentY, COIN_SIZE, Color.MAGENTA, COLOR_BORDER, "S");
+    }
+
+    @Override
+    public void visit(SolidWall wall) {
+        // Walls are usually rendered by TileMapRenderer, but if an entity wall is here:
+    }
+
+    @Override
+    public void visit(SpecialElement element) {
+        // Generic special element
+    }
+
+    @Override
+    public void visit(domain.level.Zone zone) {
+        // Zones are typically invisible logically-triggering regions
     }
 
     private void drawSquareEntity(Graphics2D g2d, int x, int y, int size, Color fill, Color border, String label) {

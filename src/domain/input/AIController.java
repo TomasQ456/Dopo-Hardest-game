@@ -27,4 +27,9 @@ public class AIController implements PlayerController {
         }
         return this.aiStrategy.nextDirection(player, level);
     }
+
+    @Override
+    public void processKeyboardInput(Player player, Direction direction) throws DhgDomainException {
+        // AI controllers ignore physical keyboard inputs
+    }
 }

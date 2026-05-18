@@ -160,4 +160,19 @@ public class GameModel implements GameModelSubject {
             observer.onModelChanged(event);
         }
     }
+
+    /**
+     * Processes keyboard input by dispatching it to all player controllers.
+     * @param direction The direction pressed.
+     */
+    public void processKeyboardInput(domain.math.Direction direction) throws DhgDomainException {
+        Level level = getCurrentLevel();
+        if (level != null) {
+            for (domain.entity.Player player : level.getPlayers()) {
+                if (player.getController() != null) {
+                    player.getController().processKeyboardInput(player, direction);
+                }
+            }
+        }
+    }
 }

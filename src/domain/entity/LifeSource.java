@@ -11,4 +11,9 @@ public class LifeSource extends SpecialElement {
         player.addShieldHit();
         this.deactivate();
     }
+
+    @Override
+    public void accept(EntityVisitor visitor) throws DhgDomainException {
+        visitor.visit(this);
+    }
 }

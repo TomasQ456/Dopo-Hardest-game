@@ -9,11 +9,11 @@ import domain.exception.DhgDomainException;
 public class HumanController implements PlayerController {
     private Direction lastDirection = Direction.NONE;
 
-    /**
-     * Registers the currently pressed direction from input hardware.
-     * @param direction The direction being pressed.
-     */
-    public void registerInput(Direction direction) {
+    @Override
+    public void processKeyboardInput(Player player, Direction direction) throws DhgDomainException {
+        if (player != null) {
+            player.setDesiredDirection(direction);
+        }
         this.lastDirection = direction;
     }
 

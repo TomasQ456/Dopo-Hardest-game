@@ -5,4 +5,5 @@ import domain.exception.DhgDomainException;
 /** Standard solid wall tile preventing movement. */
 public class WallTile extends Tile {
     @Override public boolean isSolid() throws DhgDomainException { return true; }
+    @Override public void accept(TileVisitor visitor) throws DhgDomainException { visitor.visit(this); }
 }

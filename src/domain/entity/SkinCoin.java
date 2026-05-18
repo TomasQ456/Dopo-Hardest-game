@@ -26,4 +26,9 @@ public class SkinCoin extends Coin {
         player.applySkin(this.grantedSkin);
         this.deactivate();
     }
+
+    @Override
+    public void accept(EntityVisitor visitor) throws DhgDomainException {
+        visitor.visit(this);
+    }
 }

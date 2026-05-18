@@ -155,18 +155,7 @@ public class GameController {
             try {
                 // 1. Feed player 1 direction to domain
                 Direction d1 = keyboardHandler.getPlayer1Direction();
-                Level level = gameModel.getCurrentLevel();
-                if (level != null) {
-                    List<Entity> entities = level.getEntities();
-                    for (Entity entity : entities) {
-                        if (entity instanceof Player) {
-                            Player p = (Player) entity;
-                            if (p.getController() instanceof HumanController) {
-                                p.setDesiredDirection(d1);
-                            }
-                        }
-                    }
-                }
+                gameModel.processKeyboardInput(d1);
 
                 // 2. Tick the domain model
                 gameModel.update(DELTA_SECONDS);

@@ -35,4 +35,9 @@ public abstract class Zone extends Entity {
      * @throws DhgDomainException if retrieval fails.
      */
     public int getPlayerIndex() throws DhgDomainException { return 0; }
+
+    @Override
+    public void accept(domain.entity.EntityVisitor visitor) throws DhgDomainException {
+        visitor.visit(this);
+    }
 }

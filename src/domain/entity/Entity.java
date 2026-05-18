@@ -116,4 +116,11 @@ public abstract class Entity implements Updatable {
     public void deactivate() throws DhgDomainException {
         this.active = false;
     }
+
+    /**
+     * Accepts a visitor for polymorphic operations.
+     * @param visitor The visitor to accept.
+     * @throws DhgDomainException if visit fails.
+     */
+    public abstract void accept(EntityVisitor visitor) throws DhgDomainException;
 }

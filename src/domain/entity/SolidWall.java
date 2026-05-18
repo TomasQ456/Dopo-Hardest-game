@@ -11,4 +11,9 @@ public class SolidWall extends SpecialElement {
         // SolidWall does not modify player state on contact.
         // Collision resolution (position adjustment) is handled by the Level's collision system.
     }
+
+    @Override
+    public void accept(EntityVisitor visitor) throws DhgDomainException {
+        visitor.visit(this);
+    }
 }
